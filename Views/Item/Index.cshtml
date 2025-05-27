@@ -1,0 +1,185 @@
+﻿@model HotelierTask.Models.ItemViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+@using (Html.BeginForm("Save", "Item", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-horizontal" style="border: 1px solid #ccc; padding: 20px; max-width: 500px; background-color: white;">
+        <div class="bg-secondary text-white p-2 mb-3"><strong>Add New Menu Item</strong></div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Section Name : <span class="text-danger">*</span></label>
+            <div class="col-sm-7">
+               
+                @Html.DropDownListFor(m => m.SelectedSectionId, Model.Sections, "--Select Section--", new { @class = "form-control", @id = "SectionId" })
+
+                @Html.ValidationMessageFor(m => m.SelectedSectionId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Counter Name : <span class="text-danger">*</span></label>
+            <div class="col-sm-7">
+              
+                @Html.DropDownListFor(m => m.SelectedCounterId, Model.Counters, "--Select Counter--", new { @class = "form-control", @id = "CounterId" })
+                @Html.ValidationMessageFor(m => m.SelectedCounterId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Category Name : <span class="text-danger">*</span></label>
+            <div class="col-sm-7">
+                @Html.DropDownListFor(m => m.SelectedCategoryId, Model.Categories, "--Select Category--", new { @class = "form-control", @id = "CategoryId" })
+                @Html.ValidationMessageFor(m => m.SelectedCategoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Item Code : <span class="text-danger">*</span></label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.ItemCode, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(m => m.ItemCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Item Name : <span class="text-danger">*</span></label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.ItemName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ItemName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Item Short Name :</label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.ItemShortName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Sale Rate :</label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.SaleRate, new { @class = "form-control", type = "number", step = "0.01" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Item Disc % :</label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.ItemDiscPerc, new { @class = "form-control", type = "number", step = "0.01" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Disc End Date :</label>
+            <div class="col-sm-7">
+                @Html.TextBoxFor(m => m.DiscEndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Is Most Used</label>
+            <div class="col-sm-7 mt-2">
+                @Html.CheckBoxFor(m => m.IsMostUsed)
+            </div>
+        </div>
+
+        <div class="form-group text-center mt-3">
+            <button type="submit" class="btn btn-primary" style="background-color: #003399;">Save</button>
+            <a href="@Url.Action("Index", "Item")" class="btn btn-primary mx-2" style="background-color: #003399;">Cancel</a>
+            <button type="button" class="btn btn-primary" style="background-color: #003399;" id="toggleListBtn">Show List</button>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<hr />
+
+<div id="itemListSection" style="display: block;">
+    <h4>Item List</h4>
+    <table class="table table-bordered table-striped table-responsive">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Section Name</th>
+                <th>Counter Name</th>
+                <th>Category Name</th>
+                <th>Item Name</th>
+                <th>Item Another Name</th>
+                <th>Short Name</th>
+                <th>Disc %</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ItemList)
+            {
+                <tr>
+                    <td>@item.ItemCode</td>
+                    <td>@item.SectionName</td>
+                    <td>@item.CounterName</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.ItemName</td>
+                    <td>@item.ItemShortName</td>
+                    <td>@item.ItemShortName</td>
+                    <td>@item.ItemDiscPerc</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-sm  btn-warning" }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-sm btn-danger", onclick = "return confirm('Are you sure you want to delete this item?');" })
+
+
+
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<script>
+    $(function () {
+        $('#toggleListBtn').click(function () {
+            $('#itemListSection').toggle();
+            var isVisible = $('#itemListSection').is(':visible');
+            $(this).text(isVisible ? 'Hide List' : 'Show List');
+        });
+
+    $("#SectionId").change(function () {
+            var sectionId = $(this).val();
+            $("#CounterId").empty().append('<option>Loading...</option>');
+            $.getJSON('@Url.Action("GetCounters", "Item")', { sectionId: sectionId }, function (data) {
+                $("#CounterId").empty().append('<option value="">--Select Counter--</option>');
+                $.each(data, function (i, counter) {
+                    $("#CounterId").append('<option value="' + counter.Id + '">' + counter.CounterName + '</option>');
+                });
+            });
+        });
+
+    $("#CounterId").change(function () {
+            var counterId = $(this).val();
+            $("#CategoryId").empty().append('<option>Loading...</option>');
+            $.getJSON('@Url.Action("GetCategories", "Item")', { counterId: counterId }, function (data) {
+                $("#CategoryId").empty().append('<option value="">--Select Category--</option>');
+                $.each(data, function (i, category) {
+                    $("#CategoryId").append('<option value="' + category.Id + '">' + category.CategoryName + '</option>');
+                });
+            });
+        });
+    });
+</script>
