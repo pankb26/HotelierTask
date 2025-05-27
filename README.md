@@ -1,6 +1,5 @@
 ## HotelierTask
---This project is a solution to the coding challenge provided by Hotelier Software, Pune, developed using ASP.NET MVC with Entity Framework, jQuery, and Bootstrap.
-
+--This project is a solution to a coding challenge, developed using ASP.NET MVC with Entity Framework, jQuery, and Bootstrap.
 ## Key Features Implemented
 Item Detail Form with full CRUD operations (Create, Read, Update, Delete)
 # Cascading Dropdowns:
